@@ -4,6 +4,9 @@ import { styled } from "styled-components";
 type BUTTON_VARIANTS = ["primary", "secondary", "danger", "ghost", "link", "outline"];
 export type ButtonVariant = BUTTON_VARIANTS[number];
 
+type BUTTON_SIZES = ["sm", "md", "lg"];
+export type ButtonSize = BUTTON_SIZES[number];
+
 const getButtonTypeStyles = (variant: ButtonVariant, theme: ThemeTokens) => {
   switch (variant) {
     case "primary":
@@ -44,14 +47,38 @@ const getButtonTypeStyles = (variant: ButtonVariant, theme: ThemeTokens) => {
   }
 };
 
-export const BaseButtonStyle = styled.button<{ variant?: ButtonVariant }>`
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+const getButtonSizeStyles = (size: ButtonSize, theme: ThemeTokens) => {
+  switch (size) {
+    case "sm":
+      return `
+        padding: ${theme.spacing.xs} ${theme.spacing.sm};
+        font-size: ${theme.typography.fontSize.sm};
+      `;
+    case "md":
+      return `
+        padding: ${theme.spacing.sm} ${theme.spacing.md};
+        font-size: ${theme.typography.fontSize.base};
+      `;
+    case "lg":
+      return `
+        padding: ${theme.spacing.md} ${theme.spacing.lg};
+        font-size: ${theme.typography.fontSize.lg};
+      `;
+    default:
+      return "";
+  }
+};
+
+export const BaseButtonStyle = styled.button<{
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+}>`
   border: none;
   cursor: pointer;
   border-radius: ${({ theme }) => theme.radius.default};
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
-  font-size: ${({ theme }) => theme.typography.fontSize.base};
 
+  ${({ size, theme }) => size && getButtonSizeStyles(size, theme)}
   ${({ variant, theme }) => variant && getButtonTypeStyles(variant, theme)}
 
   &:hover {
@@ -61,6 +88,7 @@ export const BaseButtonStyle = styled.button<{ variant?: ButtonVariant }>`
   &:disabled {
     background-color: ${({ theme }) => theme.colors.secondary};
     cursor: not-allowed;
+    opacity: 0.7;
   }
 
   &:focus {

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { NewTask, Task } from "./types";
+import type { NewTask, Task, UpdateTask } from "./types";
 import { persist } from "zustand/middleware";
 
 interface TaskState {
@@ -10,6 +10,10 @@ interface TaskState {
 
 interface TaskActions {
   addTask: (newTask: NewTask) => Promise<{ success: boolean; message: string; task?: Task }>;
+  updateTask: (
+    id: string,
+    data: UpdateTask,
+  ) => Promise<{ success: boolean; message: string; task?: Task }>;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
 }
@@ -45,6 +49,36 @@ export const useTaskStore = create<TaskStore>()(
 
           set({ allTasks: [...allTasks, task], isLoading: false });
           return { success: true, message: "Task added successfully", task };
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : "Unknown error";
+          set({ isLoading: false, error: errorMessage });
+          return { success: false, message: errorMessage };
+        }
+      },
+
+      updateTask: async (id, data) => {
+        set({ isLoading: true, error: null });
+
+        try {
+          const { allTasks } = get();
+          const taskIndex = allTasks.findIndex((task) => task.id === id);
+
+          if (taskIndex === -1) {
+            set({ isLoading: false, error: "Task not found" });
+            return { success: false, message: "Task not found" };
+          }
+
+          const updatedTask: Task = {
+            ...allTasks[taskIndex],
+            ...data,
+            updatedAt: new Date(),
+          };
+
+          const updatedTasks = [...allTasks];
+          updatedTasks[taskIndex] = updatedTask;
+
+          set({ allTasks: updatedTasks, isLoading: false });
+          return { success: true, message: "Task updated successfully", task: updatedTask };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Unknown error";
           set({ isLoading: false, error: errorMessage });
