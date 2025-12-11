@@ -1,8 +1,9 @@
-import { styled, type DefaultTheme } from "styled-components";
+import type { ThemeTokens } from "@/app/theme/tokens";
+import { styled } from "styled-components";
 
 type TitleLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
-const getFontSize = (level: TitleLevel, theme: DefaultTheme) => {
+const getFontSize = (level: TitleLevel, theme: ThemeTokens) => {
   const fontSizeMap = {
     1: theme.typography.fontSize["4xl"],
     2: theme.typography.fontSize["3xl"],

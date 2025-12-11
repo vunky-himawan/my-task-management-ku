@@ -8,7 +8,9 @@ import { Button } from "@/shared/components/atoms/button/button";
 import { Flex } from "@/shared/components/atoms/display/flex/flex";
 import styled, { useTheme } from "styled-components";
 import { CenteredContainer } from "@/shared/components/atoms/container/container";
-import { Toast } from "@/shared/components/atoms/toast/toast";
+import { Paragraph } from "@/shared/components/atoms/typography/paragraph/paragraph";
+import { Link } from "@tanstack/react-router";
+import { Toast } from "@/shared/utils/toast";
 
 const SignInFormWrapper = styled.form`
   width: 100%;
@@ -63,6 +65,13 @@ export const SignInForm = () => {
               Sign In
             </Button>
           </FormField>
+
+          <Paragraph>
+            Don't have an account?{" "}
+            <Link to="/auth/sign-up">
+              <Button variant="link">Sign Up</Button>
+            </Link>
+          </Paragraph>
         </Flex>
       </SignInFormWrapper>
     </CenteredContainer>

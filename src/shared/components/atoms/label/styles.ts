@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const LabelStyle = styled.label`
   font-family: ${({ theme }) => theme.typography.fontFamily.body};
   font-size: ${({ theme }) => theme.typography.fontSize.base};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.normal};
   color: ${({ theme }) => theme.colors.black};
 
   span.required {

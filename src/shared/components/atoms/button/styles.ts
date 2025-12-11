@@ -1,11 +1,10 @@
-import { styled, type DefaultTheme } from "styled-components";
+import type { ThemeTokens } from "@/app/theme/tokens";
+import { styled } from "styled-components";
 
 type BUTTON_VARIANTS = ["primary", "secondary", "danger", "ghost", "link", "outline"];
 export type ButtonVariant = BUTTON_VARIANTS[number];
 
-const getButtonTypeStyles = (variant: ButtonVariant, theme: DefaultTheme) => {
-  console.log("Applying styles for variant:", variant);
-
+const getButtonTypeStyles = (variant: ButtonVariant, theme: ThemeTokens) => {
   switch (variant) {
     case "primary":
       return `

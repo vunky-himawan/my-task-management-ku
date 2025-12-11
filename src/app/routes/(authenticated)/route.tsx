@@ -1,3 +1,4 @@
+import { AuthenticatedLayout } from "@/shared/layouts/authenticated-layout";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(authenticated)")({
@@ -5,5 +6,9 @@ export const Route = createFileRoute("/(authenticated)")({
 });
 
 function RouteComponent() {
-  return <Outlet />;
+  return (
+    <AuthenticatedLayout>
+      <Outlet />
+    </AuthenticatedLayout>
+  );
 }

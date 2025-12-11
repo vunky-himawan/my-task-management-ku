@@ -9,7 +9,7 @@ export const InputWrapper = styled.div`
 
 export const BaseInputStyle = styled.input`
   width: 100%;
-  padding: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
   padding-right: 3rem; /* ruang untuk ikon mata */
   border: 1px solid ${({ theme }) => theme.colors.secondary};
   border-radius: ${({ theme }) => theme.radius.md};
@@ -22,6 +22,10 @@ export const BaseInputStyle = styled.input`
     outline: none;
     box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary}33;
   }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.secondary};
+    font-size: ${({ theme }) => theme.typography.fontSize.sm}
 `;
 
 export const EyeIconButton = styled.button`
