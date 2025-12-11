@@ -2,8 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import CryptoJS from "crypto-js";
 import type { NewUser, User } from "../model/types";
-import { generateAuthToken } from "@/shared/lib/auth/token";
-import { useAuthStore } from "@/shared/stores/auth.store";
 
 interface UserState {
   allUsers: User[];
@@ -13,8 +11,10 @@ interface UserState {
 
 interface UserActions {
   register: (newUser: NewUser) => Promise<{ success: boolean; message: string; user?: User }>;
-  login: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
-  logout: () => void;
+  login: (
+    email: string,
+    password: string,
+  ) => Promise<{ success: boolean; message: string; user?: User }>;
   getUserByEmail: (email: string) => User | undefined;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
@@ -44,17 +44,14 @@ export const useUserStore = create<UserStore>()(
         try {
           const { allUsers, getUserByEmail } = get();
 
-          // Check if email already exists
           const existingUser = getUserByEmail(newUser.email);
           if (existingUser) {
             set({ isLoading: false, error: "Email already registered" });
             return { success: false, message: "Email already registered" };
           }
 
-          // Hash password
           const hashedPassword = CryptoJS.SHA256(newUser.password).toString();
 
-          // Create new user
           const user: User = {
             id: crypto.randomUUID(),
             name: newUser.name,
@@ -64,16 +61,11 @@ export const useUserStore = create<UserStore>()(
             updatedAt: new Date(),
           };
 
-          // Save user to store
           set({
             allUsers: [...allUsers, user],
             isLoading: false,
             error: null,
           });
-
-          // Generate token and set auth
-          const token = generateAuthToken(user.id);
-          useAuthStore.getState().setAuth(user, token);
 
           return { success: true, message: "Registration successful", user };
         } catch (error) {
@@ -89,36 +81,26 @@ export const useUserStore = create<UserStore>()(
         try {
           const { getUserByEmail } = get();
 
-          // Find user by email
           const user = getUserByEmail(email);
           if (!user) {
             set({ isLoading: false, error: "Invalid email or password" });
             return { success: false, message: "Invalid email or password" };
           }
 
-          // Hash provided password and compare
           const hashedPassword = CryptoJS.SHA256(password).toString();
           if (user.password !== hashedPassword) {
             set({ isLoading: false, error: "Invalid email or password" });
             return { success: false, message: "Invalid email or password" };
           }
 
-          // Generate token and set auth
-          const token = generateAuthToken(user.id);
-          useAuthStore.getState().setAuth(user, token);
-
           set({ isLoading: false, error: null });
-          return { success: true, message: "Login successful" };
+
+          return { success: true, message: "Login successful", user };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Login failed";
           set({ isLoading: false, error: errorMessage });
           return { success: false, message: errorMessage };
         }
-      },
-
-      logout: () => {
-        useAuthStore.getState().clearAuth();
-        set({ error: null });
       },
     }),
     {

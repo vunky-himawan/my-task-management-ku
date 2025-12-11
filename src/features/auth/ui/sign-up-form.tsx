@@ -11,6 +11,8 @@ import { Paragraph } from "@/shared/components/atoms/typography/paragraph/paragr
 import { Link, useNavigate } from "@tanstack/react-router";
 import { SignUpSchema } from "../model/schema";
 import { useUserStore, selectIsLoading } from "../stores/user.store";
+import { useAuthStore } from "@/shared/stores/auth.store";
+import { generateAuthToken } from "@/shared/lib/auth/token";
 import { Toast } from "@/shared/utils/toast";
 
 const SignUpFormWrapper = styled.form`
@@ -26,6 +28,7 @@ export const SignUpForm = () => {
   const navigate = useNavigate();
   const register = useUserStore((state) => state.register);
   const isLoading = useUserStore(selectIsLoading);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
@@ -39,9 +42,15 @@ export const SignUpForm = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
-    const result = await register(data);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...userData } = data;
+    const result = await register(userData);
 
-    if (result.success) {
+    if (result.success && result.user) {
+      // UI layer orchestrates: user store + auth store
+      const token = generateAuthToken(result.user.id);
+      setAuth(result.user, token);
+
       Toast.success(result.message);
       form.reset();
       navigate({ to: "/dashboard" });

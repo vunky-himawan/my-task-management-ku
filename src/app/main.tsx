@@ -6,6 +6,7 @@ import { RouterProvider } from "./providers/router.provider";
 import { ThemeProvider } from "./theme/theme-provider";
 import { environtment } from "@/config/environtment";
 import { Toaster } from "sonner";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import "@/app/styles/reset.css";
 import "@/app/styles/fonts.css";
 
@@ -31,10 +32,37 @@ SentryInit({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider>
-      <GlobalErrorListener />
-      <RouterProvider />
-      <Toaster />
-    </ThemeProvider>
+    <HelmetProvider>
+      <ThemeProvider>
+        <Helmet>
+          <link
+            rel="preload"
+            href="/fonts/Satoshi-Variable.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+
+          <link
+            rel="preload"
+            href="/fonts/Satoshi-VariableItalic.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin={"anonymous"}
+          />
+
+          <link
+            rel="preload"
+            href="/fonts/ClashDisplay-Variable.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+        </Helmet>
+        <GlobalErrorListener />
+        <RouterProvider />
+        <Toaster />
+      </ThemeProvider>
+    </HelmetProvider>
   </StrictMode>,
 );
