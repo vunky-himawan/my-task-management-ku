@@ -28,13 +28,13 @@ export const AuthenticatedLayout = ({ children }: { children: React.ReactNode })
 
   if (isLoading)
     return (
-      <CenteredContainer size="full" style={{ height: "100vh" }}>
+      <CenteredContainer size="full" style={{ height: "100vh", overflow: "hidden" }}>
         <Loading />
       </CenteredContainer>
     );
 
   return (
-    <main>
+    <main style={{ height: "100vh", overflow: "hidden" }}>
       <Header>
         <Flex justifyContent="space-between" alignItems="center" style={{ width: "100%" }}>
           {currentUser && <span>Welcome, {currentUser.name}!</span>}

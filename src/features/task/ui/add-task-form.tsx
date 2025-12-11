@@ -12,6 +12,8 @@ import { Title } from "@/shared/components/atoms/typography/title/title";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTaskStore } from "../model/stores";
 import { Toast } from "@/shared/utils/toast";
+import { Card } from "@/shared/components/atoms/card/card";
+import { selectUser, useAuthStore } from "@/shared/stores/auth.store";
 
 const slideDown = keyframes`
   from {
@@ -47,6 +49,7 @@ const AnimatedFieldWrapper = styled.div<{ $isClosing: boolean }>`
 export const AddTaskForm = () => {
   const theme = useTheme();
   const addTask = useTaskStore((state) => state.addTask);
+  const currentUser = useAuthStore(selectUser);
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isClosing, setIsClosing] = useState<boolean>(false);
 
@@ -62,7 +65,7 @@ export const AddTaskForm = () => {
   const onSubmit = async (data: AddTaskInput) => {
     const result = await addTask({
       ...data,
-      completed: false,
+      userId: currentUser!.id,
     });
 
     if (result.success) {
@@ -84,57 +87,51 @@ export const AddTaskForm = () => {
   };
 
   return (
-    <Container
-      size="full"
-      style={{
-        margin: 0,
-        borderRadius: theme.radius.md,
-        backgroundColor: theme.colors.surface,
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Flex gap={theme.spacing.sm} direction="column">
-          <Title level={4}>Add New Task</Title>
+    <Container size="full" style={{ padding: 0 }}>
+      <Card>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Flex gap={theme.spacing.sm} direction="column">
+            <Title level={4}>Add New Task</Title>
 
-          <Controller
-            name="title"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <FormField label="" error={fieldState.error?.message}>
-                <Input {...field} placeholder="Enter title" onFocus={() => setIsFocused(true)} />
-              </FormField>
-            )}
-          />
-
-          {/* Expand TextArea on focus */}
-          {isFocused && (
-            <AnimatedFieldWrapper $isClosing={isClosing}>
-              <Flex direction="column" gap={theme.spacing.md}>
-                <Controller
-                  name="description"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <FormField label="" error={fieldState.error?.message}>
-                      <TextArea {...field} placeholder="Enter description" rows={4} />
-                    </FormField>
-                  )}
-                />
-                <FormField label="">
-                  <Flex gap={theme.spacing.sm} justifyContent="flex-end">
-                    <Button variant="outline" onClick={onCancel} type="button">
-                      Cancel
-                    </Button>
-                    <Button type="submit" variant="primary">
-                      Submit
-                    </Button>
-                  </Flex>
+            <Controller
+              name="title"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <FormField label="" error={fieldState.error?.message}>
+                  <Input {...field} placeholder="Enter title" onFocus={() => setIsFocused(true)} />
                 </FormField>
-              </Flex>
-            </AnimatedFieldWrapper>
-          )}
-        </Flex>
-      </form>
+              )}
+            />
+
+            {/* Expand TextArea on focus */}
+            {isFocused && (
+              <AnimatedFieldWrapper $isClosing={isClosing}>
+                <Flex direction="column" gap={theme.spacing.md}>
+                  <Controller
+                    name="description"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <FormField label="" error={fieldState.error?.message}>
+                        <TextArea {...field} placeholder="Enter description" rows={4} />
+                      </FormField>
+                    )}
+                  />
+                  <FormField label="">
+                    <Flex gap={theme.spacing.sm} justifyContent="flex-end">
+                      <Button variant="outline" onClick={onCancel} type="button">
+                        Cancel
+                      </Button>
+                      <Button type="submit" variant="primary">
+                        Submit
+                      </Button>
+                    </Flex>
+                  </FormField>
+                </Flex>
+              </AnimatedFieldWrapper>
+            )}
+          </Flex>
+        </form>
+      </Card>
     </Container>
   );
 };
