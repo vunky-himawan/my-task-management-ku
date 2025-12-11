@@ -1,8 +1,6 @@
 import { type FC, type PropsWithChildren } from "react";
-import { Centered } from "@/shared/ui/centered";
 import "./styles.css";
 import type { AppError } from "@/shared/types/error";
-import { CustomAxiosAppError } from "@/shared/lib/axios/types";
 import { PageNotFound } from "../model/error";
 
 interface IErrorBoundaryProps extends PropsWithChildren {
@@ -19,15 +17,14 @@ export const ErrorBoundary: FC<IErrorBoundaryProps> = ({
   message,
   onReset,
 }) => {
-  const processedMessage =
-    error instanceof CustomAxiosAppError || PageNotFound ? message : "Something went wrong";
+  const processedMessage = error || PageNotFound ? message : "Something went wrong";
 
   if (!error) {
     return <>{children}</>;
   }
 
   return (
-    <Centered isFullScreen className="relative overflow-hidden">
+    <div className="relative overflow-hidden">
       <div className="absolute inset-0 z-10 flex items-center justify-center opacity-80 background">
         <h1 className="md:text-[18rem]/228 font-bold -z-10 text-[8rem] text-destructive">
           {!statusCode && "ERROR"}
@@ -40,6 +37,6 @@ export const ErrorBoundary: FC<IErrorBoundaryProps> = ({
         <p className="lg:text-xl">{processedMessage}</p>
         <button onClick={onReset}>Back</button>
       </div>
-    </Centered>
+    </div>
   );
 };
