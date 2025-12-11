@@ -35,7 +35,6 @@ export const createCommonStore = <T,>() =>
     },
   }));
 
-// Selectors
 export const selectIsLoading = <T,>(state: CommonState<T>) => state.isLoading;
 export const selectError = <T,>(state: CommonState<T>) => state.error;
 export const selectData = <T,>(state: CommonState<T>) => state.data;

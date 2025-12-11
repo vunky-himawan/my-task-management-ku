@@ -1,6 +1,5 @@
-import { SignInSchema } from "../model/schema";
+import { SignInSchema, type SignInFormData } from "../model/schema";
 import { Controller, useForm } from "react-hook-form";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormField } from "@/shared/components/molecules/form-field/form-field";
 import { Input } from "@/shared/components/atoms/input/input";
@@ -30,7 +29,7 @@ export const SignInForm = () => {
   const isLoading = useUserStore(selectIsLoading);
   const setAuth = useAuthStore((state) => state.setAuth);
 
-  const form = useForm<z.infer<typeof SignInSchema>>({
+  const form = useForm<SignInFormData>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
       email: "",
@@ -39,12 +38,12 @@ export const SignInForm = () => {
     mode: "onSubmit",
   });
 
-  const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
+  const onSubmit = async (data: SignInFormData) => {
     const result = await login(data.email, data.password);
 
-    if (result.success && result.user) {
-      const token = generateAuthToken(result.user.id);
-      setAuth(result.user, token);
+    if (result.success && result.data) {
+      const token = generateAuthToken(result.data.id);
+      setAuth(result.data, token);
 
       Toast.success(result.message);
       form.reset();

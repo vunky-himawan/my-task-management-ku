@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import CryptoJS from "crypto-js";
 import type { NewUser, User } from "../model/types";
+import type { FailureResponse, SuccessResponse } from "@/shared/types/response";
 
 interface UserState {
   allUsers: User[];
@@ -10,11 +11,8 @@ interface UserState {
 }
 
 interface UserActions {
-  register: (newUser: NewUser) => Promise<{ success: boolean; message: string; user?: User }>;
-  login: (
-    email: string,
-    password: string,
-  ) => Promise<{ success: boolean; message: string; user?: User }>;
+  register: (newUser: NewUser) => Promise<SuccessResponse<User> | FailureResponse>;
+  login: (email: string, password: string) => Promise<SuccessResponse<User> | FailureResponse>;
   getUserByEmail: (email: string) => User | undefined;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
@@ -67,7 +65,7 @@ export const useUserStore = create<UserStore>()(
             error: null,
           });
 
-          return { success: true, message: "Registration successful", user };
+          return { success: true, message: "Registration successful", data: user };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Registration failed";
           set({ isLoading: false, error: errorMessage });
@@ -95,7 +93,7 @@ export const useUserStore = create<UserStore>()(
 
           set({ isLoading: false, error: null });
 
-          return { success: true, message: "Login successful", user };
+          return { success: true, message: "Login successful", data: user };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Login failed";
           set({ isLoading: false, error: errorMessage });
@@ -110,7 +108,6 @@ export const useUserStore = create<UserStore>()(
   ),
 );
 
-// Selectors
 export const selectAllUsers = (state: UserStore) => state.allUsers;
 export const selectIsLoading = (state: UserStore) => state.isLoading;
 export const selectError = (state: UserStore) => state.error;

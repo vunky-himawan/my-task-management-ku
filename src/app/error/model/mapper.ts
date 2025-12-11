@@ -1,6 +1,5 @@
-import type { ErrorResponse } from "@/shared/types/error";
 import { APP_ERROR_ENUM } from "@/shared/enum/error";
-import type { AppError } from "./types";
+import type { AppError, ErrorResponse } from "./types";
 import { STATUS_CODE_MAPPING } from "./const";
 
 export const mapError = (error: AppError): ErrorResponse => {

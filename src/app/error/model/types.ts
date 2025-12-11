@@ -1,5 +1,3 @@
-import { APP_ERROR_ENUM } from "@/shared/enum/error";
-import type { DetailError } from "@/shared/types/error";
 import { ERROR_MESSAGES } from "./const";
 
 export type Source = "global" | "react" | "network" | "action" | "unknown";
@@ -54,4 +52,28 @@ export class UnhandledRejectionError extends CustomAppError {
     super({ message, error: APP_ERROR_ENUM.PROMISE_REJECTION });
     this.error = APP_ERROR_ENUM.PROMISE_REJECTION;
   }
+}
+
+export interface ErrorResponse {
+  statusCode?: number;
+  message: string;
+  error: APP_ERROR_ENUM;
+  details?: DetailError[];
+  timestamp: number;
+}
+
+export interface DetailError {
+  code: string;
+  field?: string;
+  message: string;
+  hint?: string;
+}
+
+export enum APP_ERROR_ENUM {
+  NOT_FOUND = "NOT_FOUND",
+  UNKNOWN_ERROR = "UNKNOWN_ERROR",
+  PROMISE_REJECTION = "PROMISE_REJECTION",
+  RUNTIME_ERROR = "RUNTIME_ERROR",
+  NETWORK_ERROR = "NETWORK_ERROR",
+  VALIDATION_ERROR = "VALIDATION_ERROR",
 }
