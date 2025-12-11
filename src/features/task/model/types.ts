@@ -10,6 +10,6 @@ export type Task = {
 
 export type NewTask = Omit<Task, "id" | "createdAt" | "updatedAt" | "completed">;
 
-export type UpdateTask = Partial<Omit<Task, "id" | "createdAt">>;
+export type UpdateTask = Partial<Omit<Task, "id" | "createdAt" | "completed" | "updatedAt">>;
 
 export type TaskFilter = "all" | "completed" | "pending";
