@@ -8,8 +8,9 @@ import { FormField } from "@/shared/components/molecules/form-field/form-field";
 import { Input } from "@/shared/components/atoms/input/input";
 import { Button } from "@/shared/components/atoms/button/button";
 import { Paragraph } from "@/shared/components/atoms/typography/paragraph/paragraph";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { SignUpSchema } from "../model/schema";
+import { useUserStore, selectIsLoading } from "../stores/user.store";
 import { Toast } from "@/shared/utils/toast";
 
 const SignUpFormWrapper = styled.form`
@@ -22,6 +23,9 @@ const SignUpFormWrapper = styled.form`
 
 export const SignUpForm = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const register = useUserStore((state) => state.register);
+  const isLoading = useUserStore(selectIsLoading);
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
@@ -34,8 +38,16 @@ export const SignUpForm = () => {
     mode: "onSubmit",
   });
 
-  const onSubmit = () => {
-    Toast.info(`This feature is not implemented yet.`);
+  const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
+    const result = await register(data);
+
+    if (result.success) {
+      Toast.success(result.message);
+      form.reset();
+      navigate({ to: "/dashboard" });
+    } else {
+      Toast.error(result.message);
+    }
   };
 
   return (
@@ -87,7 +99,7 @@ export const SignUpForm = () => {
             )}
           />
           <FormField label="">
-            <Button type="submit" variant="primary" isLoading={false}>
+            <Button type="submit" variant="primary" isLoading={isLoading}>
               Sign Up
             </Button>
           </FormField>
