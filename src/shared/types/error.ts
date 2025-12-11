@@ -1,20 +1,16 @@
 import type { APP_ERROR_ENUM } from "../enum/error";
 
-export interface AppError {
-  getStatusCode(): number | string | undefined;
-  getMessage(): string;
-  getError(): APP_ERROR_ENUM;
-}
-
 export interface ErrorResponse {
-  statusCode: number | string | undefined;
+  statusCode?: number;
   message: string;
   error: APP_ERROR_ENUM;
-  details?: TDetailError[];
+  details?: DetailError[];
+  timestamp: number;
 }
 
-export type TDetailError = {
+export interface DetailError {
   code: string;
-  field: string;
+  field?: string;
   message: string;
-};
+  hint?: string;
+}
