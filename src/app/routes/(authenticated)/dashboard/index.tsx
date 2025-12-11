@@ -1,7 +1,6 @@
-import { LogoutButton } from "@/features/auth/ui/logout-button";
-import { CenteredContainer } from "@/shared/components/atoms/container/container";
+import { AddTaskForm } from "@/features/task/ui/add-task-form";
+import { Container } from "@/shared/components/atoms/container/container";
 import { Flex } from "@/shared/components/atoms/display/flex/flex";
-import { Paragraph } from "@/shared/components/atoms/typography/paragraph/paragraph";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
@@ -10,11 +9,10 @@ export const Route = createFileRoute("/(authenticated)/dashboard/")({
 
 function RouteComponent() {
   return (
-    <CenteredContainer size="full" style={{ height: "100vh" }}>
+    <Container size="sm">
       <Flex direction="column">
-        <Paragraph>Welcome to your Dashboard!</Paragraph>
-        <LogoutButton />
+        <AddTaskForm />
       </Flex>
-    </CenteredContainer>
+    </Container>
   );
 }

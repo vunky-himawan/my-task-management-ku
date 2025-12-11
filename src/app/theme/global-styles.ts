@@ -18,7 +18,7 @@ export const GlobalStyles = createGlobalStyle<{ theme: ThemeTokens }>`
     font-family: ${({ theme }) => theme.typography.fontFamily.body};
     font-size: ${({ theme }) => theme.typography.fontSize.base};
     line-height: ${({ theme }) => theme.typography.lineHeight.base};
-    background-color: ${({ theme }) => theme.colors.surface};
+    background-color: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.onSurface};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
