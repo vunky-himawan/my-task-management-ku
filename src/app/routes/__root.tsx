@@ -1,6 +1,6 @@
-import { Outlet, createRootRoute, useRouter } from "@tanstack/react-router";
+import { Outlet, createRootRoute, useNavigate } from "@tanstack/react-router";
 import { ErrorBoundary } from "../error/ui/error-boundary";
-import { useErrorStore } from "@/shared/stores/error.store";
+import { useErrorStore } from "@/app/error/store/error.store";
 import { errorHandler } from "../error/model/handler";
 
 export const Route = createRootRoute({
@@ -8,22 +8,19 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { error, clearError } = useErrorStore();
+
   const errorData = error ? errorHandler(error) : null;
 
   const resetAndRedirect = async () => {
-    await router.navigate({ to: "/" });
+    await navigate({ to: "/" });
     clearError();
+    return null;
   };
 
   return (
-    <ErrorBoundary
-      error={error}
-      message={errorData?.message}
-      onReset={resetAndRedirect}
-      statusCode={errorData?.statusCode}
-    >
+    <ErrorBoundary error={error} message={errorData?.message} onReset={resetAndRedirect}>
       <Outlet />
     </ErrorBoundary>
   );

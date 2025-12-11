@@ -32,6 +32,7 @@ SentryInit({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <GlobalErrorListener />
     <HelmetProvider>
       <ThemeProvider>
         <Helmet>
@@ -59,7 +60,6 @@ createRoot(document.getElementById("root")!).render(
             crossOrigin="anonymous"
           />
         </Helmet>
-        <GlobalErrorListener />
         <RouterProvider />
         <Toaster />
       </ThemeProvider>
