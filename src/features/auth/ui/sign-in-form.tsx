@@ -10,8 +10,10 @@ import styled, { useTheme } from "styled-components";
 import { CenteredContainer } from "@/shared/components/atoms/container/container";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { selectIsLoading, useUserStore } from "../stores/user.store";
-import { Toast } from "@/shared/utils/toast";
 import { Paragraph } from "@/shared/components/atoms/typography/paragraph/paragraph";
+import { useAuthStore } from "@/shared/stores/auth.store";
+import { generateAuthToken } from "@/shared/lib/auth/token";
+import { Toast } from "@/shared/utils/toast";
 
 const SignInFormWrapper = styled.form`
   width: 100%;
@@ -26,6 +28,7 @@ export const SignInForm = () => {
   const navigate = useNavigate();
   const login = useUserStore((state) => state.login);
   const isLoading = useUserStore(selectIsLoading);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
@@ -39,7 +42,10 @@ export const SignInForm = () => {
   const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
     const result = await login(data.email, data.password);
 
-    if (result.success) {
+    if (result.success && result.user) {
+      const token = generateAuthToken(result.user.id);
+      setAuth(result.user, token);
+
       Toast.success(result.message);
       form.reset();
       navigate({ to: "/dashboard" });

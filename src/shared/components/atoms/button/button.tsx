@@ -6,13 +6,13 @@ type Props = {
   isLoading?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const Button = ({ variant = "primary", children, ...props }: Props) => {
+export const Button = ({ variant = "primary", children, isLoading, ...props }: Props) => {
   return (
     <BaseButtonStyle
       data-variant={variant}
       {...props}
       variant={variant}
-      disabled={props.disabled || props.isLoading}
+      disabled={props.disabled || isLoading}
     >
       {children}
     </BaseButtonStyle>
