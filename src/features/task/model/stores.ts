@@ -14,6 +14,7 @@ interface TaskActions {
     id: string,
     data: UpdateTask,
   ) => Promise<{ success: boolean; message: string; task?: Task }>;
+  deleteTask: (id: string) => Promise<{ success: boolean; message: string }>;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
 }
@@ -79,6 +80,29 @@ export const useTaskStore = create<TaskStore>()(
 
           set({ allTasks: updatedTasks, isLoading: false });
           return { success: true, message: "Task updated successfully", task: updatedTask };
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : "Unknown error";
+          set({ isLoading: false, error: errorMessage });
+          return { success: false, message: errorMessage };
+        }
+      },
+
+      deleteTask: async (id) => {
+        set({ isLoading: true, error: null });
+
+        try {
+          const { allTasks } = get();
+          const taskExists = allTasks.some((task) => task.id === id);
+
+          if (!taskExists) {
+            set({ isLoading: false, error: "Task not found" });
+            return { success: false, message: "Task not found" };
+          }
+
+          const filteredTasks = allTasks.filter((task) => task.id !== id);
+
+          set({ allTasks: filteredTasks, isLoading: false });
+          return { success: true, message: "Task deleted successfully" };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Unknown error";
           set({ isLoading: false, error: errorMessage });
