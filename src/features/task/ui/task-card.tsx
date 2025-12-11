@@ -10,6 +10,7 @@ import { Flex } from "@/shared/components/atoms/display/flex/flex";
 import { Pencil, Trash2 } from "lucide-react";
 import { Toast } from "@/shared/utils/toast";
 import { useTaskStore } from "../model/stores";
+import { Checkbox } from "@/shared/components/atoms/checkbox/checkbox";
 
 type TaskCardProps = {
   task: Task;
@@ -18,6 +19,7 @@ type TaskCardProps = {
 const TaskCardWrapper = styled.div`
   position: relative;
   transition: all 0.2s ease;
+  border-radius: ${({ theme }) => theme.radius.md};
 
   &:hover {
     transform: translateY(-2px);
@@ -40,6 +42,7 @@ const EditButtonWrapper = styled.div`
 export const TaskCard = ({ task }: TaskCardProps) => {
   const theme = useTheme();
   const deleteTask = useTaskStore((state) => state.deleteTask);
+  const toggleComplete = useTaskStore((state) => state.toggleComplete);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const handleDelete = async () => {
@@ -54,6 +57,22 @@ export const TaskCard = ({ task }: TaskCardProps) => {
     }
   };
 
+  const handleToggleComplete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const result = await toggleComplete(task.id);
+
+      if (result.success) {
+        Toast.success(result.message);
+      } else {
+        Toast.error(result.message);
+      }
+    } catch (error) {
+      console.error("Toggle complete error:", error);
+      Toast.error("Failed to update task");
+    }
+  };
+
   if (isEditing) {
     return <EditTaskForm task={task} onCancel={() => setIsEditing(false)} />;
   }
@@ -63,9 +82,21 @@ export const TaskCard = ({ task }: TaskCardProps) => {
       <Card>
         <Flex direction="column" gap={theme.spacing.sm}>
           <Flex justifyContent="space-between" alignItems="flex-start">
-            <TextWrapper>
-              <Title level={5}>{task.title}</Title>
-            </TextWrapper>
+            <Flex gap={theme.spacing.sm} alignItems="flex-start">
+              <Checkbox completed={task.completed ?? false} onClick={handleToggleComplete} />
+              <TextWrapper>
+                <Title
+                  level={5}
+                  style={{
+                    textDecoration: task.completed ? "line-through" : "none",
+                    opacity: task.completed ? 0.6 : 1,
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  {task.title}
+                </Title>
+              </TextWrapper>
+            </Flex>
             <EditButtonWrapper>
               <Flex gap={theme.spacing.xs}>
                 <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
