@@ -1,7 +1,6 @@
 import { type FC, type PropsWithChildren } from "react";
 import "./styles.css";
 import type { AppError } from "@/shared/types/error";
-import { CustomAxiosAppError } from "@/shared/lib/axios/types";
 import { PageNotFound } from "../model/error";
 
 interface IErrorBoundaryProps extends PropsWithChildren {
@@ -18,8 +17,7 @@ export const ErrorBoundary: FC<IErrorBoundaryProps> = ({
   message,
   onReset,
 }) => {
-  const processedMessage =
-    error instanceof CustomAxiosAppError || PageNotFound ? message : "Something went wrong";
+  const processedMessage = error || PageNotFound ? message : "Something went wrong";
 
   if (!error) {
     return <>{children}</>;

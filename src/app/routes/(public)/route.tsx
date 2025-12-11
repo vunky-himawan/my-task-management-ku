@@ -1,3 +1,4 @@
+import { GuestLayout } from "@/shared/layouts/guest-layout";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(public)")({
@@ -5,5 +6,9 @@ export const Route = createFileRoute("/(public)")({
 });
 
 function RouteComponent() {
-  return <Outlet />;
+  return (
+    <GuestLayout>
+      <Outlet />
+    </GuestLayout>
+  );
 }

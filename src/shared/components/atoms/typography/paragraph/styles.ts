@@ -5,5 +5,5 @@ export const BodyParagraphStyle = styled.p`
   font-size: ${({ theme }) => theme.typography.fontSize.base};
   font-weight: ${({ theme }) => theme.typography.fontWeight.normal};
   color: ${({ theme }) => theme.colors.black};
-  margin: 0;
+  line-height: ${({ theme }) => theme.typography.lineHeight.base};
 `;
