@@ -10,7 +10,7 @@ export const InputWrapper = styled.div`
 export const BaseInputStyle = styled.input`
   width: 100%;
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-  padding-right: 3rem; /* ruang untuk ikon mata */
+  padding-right: 3rem;
   border: 1px solid ${({ theme }) => theme.colors.secondary};
   border-radius: ${({ theme }) => theme.radius.md};
   font-size: ${({ theme }) => theme.typography.fontSize.base};

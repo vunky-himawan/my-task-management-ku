@@ -62,4 +62,8 @@ export const BaseButtonStyle = styled.button<{ variant?: ButtonVariant }>`
     background-color: ${({ theme }) => theme.colors.secondary};
     cursor: not-allowed;
   }
+
+  &:focus {
+    outline: 1px solid ${({ theme }) => theme.colors.primary};
+  }
 `;

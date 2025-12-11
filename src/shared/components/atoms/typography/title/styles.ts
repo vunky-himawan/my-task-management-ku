@@ -16,7 +16,7 @@ const getFontSize = (level: TitleLevel, theme: ThemeTokens) => {
 };
 
 export const TitleStyle = styled.h1<{ $level: TitleLevel }>`
-  font-family: ${({ theme }) => theme.typography.fontFamily.heading};
+  font-family: ${({ theme }) => theme.typography.fontFamily.body};
   font-size: ${({ theme, $level }) => getFontSize($level, theme)};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   color: ${({ theme }) => theme.colors.black};
