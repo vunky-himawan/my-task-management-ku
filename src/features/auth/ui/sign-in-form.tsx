@@ -8,9 +8,10 @@ import { Button } from "@/shared/components/atoms/button/button";
 import { Flex } from "@/shared/components/atoms/display/flex/flex";
 import styled, { useTheme } from "styled-components";
 import { CenteredContainer } from "@/shared/components/atoms/container/container";
-import { Paragraph } from "@/shared/components/atoms/typography/paragraph/paragraph";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { selectIsLoading, useUserStore } from "../stores/user.store";
 import { Toast } from "@/shared/utils/toast";
+import { Paragraph } from "@/shared/components/atoms/typography/paragraph/paragraph";
 
 const SignInFormWrapper = styled.form`
   width: 100%;
@@ -22,6 +23,9 @@ const SignInFormWrapper = styled.form`
 
 export const SignInForm = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const login = useUserStore((state) => state.login);
+  const isLoading = useUserStore(selectIsLoading);
 
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
@@ -32,8 +36,16 @@ export const SignInForm = () => {
     mode: "onSubmit",
   });
 
-  const onSubmit = () => {
-    Toast.warning(`This feature is not implemented yet.`);
+  const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
+    const result = await login(data.email, data.password);
+
+    if (result.success) {
+      Toast.success(result.message);
+      form.reset();
+      navigate({ to: "/dashboard" });
+    } else {
+      Toast.error(result.message);
+    }
   };
 
   return (
@@ -45,7 +57,7 @@ export const SignInForm = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <FormField label="Email" error={fieldState.error?.message} required>
-                <Input type="email" {...field} required />
+                <Input type="email" {...field} required placeholder="Enter your email" />
               </FormField>
             )}
           />
@@ -55,13 +67,13 @@ export const SignInForm = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <FormField label="Password" error={fieldState.error?.message} required>
-                <Input type="password" {...field} required />
+                <Input type="password" {...field} required placeholder="Enter your password" />
               </FormField>
             )}
           />
 
           <FormField label="">
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant="primary" isLoading={isLoading}>
               Sign In
             </Button>
           </FormField>
