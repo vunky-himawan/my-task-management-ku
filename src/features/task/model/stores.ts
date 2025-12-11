@@ -35,6 +35,7 @@ export const useTaskStore = create<TaskStore>()(
 
           const task: Task = {
             id: crypto.randomUUID(),
+            userId: newTask.userId,
             title: newTask.title,
             description: newTask.description,
             completed: false,
