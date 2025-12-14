@@ -1,8 +1,8 @@
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "../routeTree.gen";
-import { useErrorStore } from "@/shared/stores/error.store";
+import { useErrorStore } from "@/app/error/store/error.store";
 import { RouterProvider as TanstackRouterProvider } from "@tanstack/react-router";
-import { PageNotFound } from "../error/model/error";
+import { PageNotFound } from "../error/model/types";
 
 const router = createRouter({
   routeTree,
