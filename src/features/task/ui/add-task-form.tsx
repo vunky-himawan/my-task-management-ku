@@ -15,19 +15,6 @@ import { Toast } from "@/shared/utils/toast";
 import { Card } from "@/shared/components/atoms/card/card";
 import { selectUser, useAuthStore } from "@/shared/stores/auth.store";
 
-const slideDown = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-    max-height: 0;
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    max-height: 300px;
-  }
-`;
-
 const slideUp = keyframes`
   from {
     opacity: 1;
@@ -42,8 +29,17 @@ const slideUp = keyframes`
 `;
 
 const AnimatedFieldWrapper = styled.div<{ $isClosing: boolean }>`
-  animation: ${({ $isClosing }) => ($isClosing ? slideUp : slideDown)} 0.3s ease-out forwards;
   overflow: hidden;
+
+  ${({ $isClosing }) =>
+    $isClosing
+      ? `animation: ${slideUp} 0.3s ease-out forwards;`
+      : `
+    animation: none;
+    max-height: 300px;
+    opacity: 1;
+    transform: translateY(0);
+  `}
 `;
 
 export const AddTaskForm = () => {
