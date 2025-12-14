@@ -1,4 +1,3 @@
-// GlobalStyles.ts
 import { createGlobalStyle } from "styled-components";
 import type { ThemeTokens } from "./tokens";
 

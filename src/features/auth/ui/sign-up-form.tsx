@@ -1,7 +1,6 @@
 import { Controller, useForm } from "react-hook-form";
 import styled, { useTheme } from "styled-components";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type z from "zod";
 import { CenteredContainer } from "@/shared/components/atoms/container/container";
 import { Flex } from "@/shared/components/atoms/display/flex/flex";
 import { FormField } from "@/shared/components/molecules/form-field/form-field";
@@ -9,7 +8,7 @@ import { Input } from "@/shared/components/atoms/input/input";
 import { Button } from "@/shared/components/atoms/button/button";
 import { Paragraph } from "@/shared/components/atoms/typography/paragraph/paragraph";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { SignUpSchema } from "../model/schema";
+import { SignUpSchema, type SignUpDTO } from "../model/schema";
 import { useUserStore, selectIsLoading } from "../stores/user.store";
 import { useAuthStore } from "@/shared/stores/auth.store";
 import { generateAuthToken } from "@/shared/lib/auth/token";
@@ -30,7 +29,7 @@ export const SignUpForm = () => {
   const isLoading = useUserStore(selectIsLoading);
   const setAuth = useAuthStore((state) => state.setAuth);
 
-  const form = useForm<z.infer<typeof SignUpSchema>>({
+  const form = useForm<SignUpDTO>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
       name: "",
@@ -41,15 +40,16 @@ export const SignUpForm = () => {
     mode: "onSubmit",
   });
 
-  const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirmPassword, ...userData } = data;
-    const result = await register(userData);
+  const onSubmit = async (data: SignUpDTO) => {
+    const result = await register({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    });
 
-    if (result.success && result.user) {
-      // UI layer orchestrates: user store + auth store
-      const token = generateAuthToken(result.user.id);
-      setAuth(result.user, token);
+    if (result.success && result.data) {
+      const token = generateAuthToken(result.data.id);
+      setAuth(result.data, token);
 
       Toast.success(result.message);
       form.reset();

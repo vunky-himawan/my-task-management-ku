@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { NewTask, Task, UpdateTask } from "./types";
 import { persist } from "zustand/middleware";
+import type { FailureResponse, SuccessResponse } from "@/shared/types/response";
 
 interface TaskState {
   allTasks: Task[];
@@ -9,12 +10,9 @@ interface TaskState {
 }
 
 interface TaskActions {
-  addTask: (newTask: NewTask) => Promise<{ success: boolean; message: string; task?: Task }>;
-  updateTask: (
-    id: string,
-    data: UpdateTask,
-  ) => Promise<{ success: boolean; message: string; task?: Task }>;
-  deleteTask: (id: string) => Promise<{ success: boolean; message: string }>;
+  addTask: (newTask: NewTask) => Promise<SuccessResponse<Task> | FailureResponse>;
+  updateTask: (id: string, data: UpdateTask) => Promise<SuccessResponse<Task> | FailureResponse>;
+  deleteTask: (id: string) => Promise<SuccessResponse<void> | FailureResponse>;
   toggleComplete: (id: string) => Promise<{ success: boolean; message: string }>;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
@@ -50,7 +48,7 @@ export const useTaskStore = create<TaskStore>()(
           };
 
           set({ allTasks: [...allTasks, task], isLoading: false });
-          return { success: true, message: "Task added successfully", task };
+          return { success: true, message: "Task added successfully", data: task };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Unknown error";
           set({ isLoading: false, error: errorMessage });
@@ -80,7 +78,7 @@ export const useTaskStore = create<TaskStore>()(
           updatedTasks[taskIndex] = updatedTask;
 
           set({ allTasks: updatedTasks, isLoading: false });
-          return { success: true, message: "Task updated successfully", task: updatedTask };
+          return { success: true, message: "Task updated successfully", data: updatedTask };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Unknown error";
           set({ isLoading: false, error: errorMessage });
@@ -103,7 +101,7 @@ export const useTaskStore = create<TaskStore>()(
           const filteredTasks = allTasks.filter((task) => task.id !== id);
 
           set({ allTasks: filteredTasks, isLoading: false });
-          return { success: true, message: "Task deleted successfully" };
+          return { success: true, message: "Task deleted successfully", data: undefined };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : "Unknown error";
           set({ isLoading: false, error: errorMessage });
